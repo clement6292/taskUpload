@@ -20,4 +20,4 @@ Route::get('/photo', [PhotoController::class, 'create']);
 Route::post('/photo', [PhotoController::class, 'store']);
 
 
-Route::get('/pdf/view',[PdfController::class, 'show'])->name('pdf.view');
+Route::get('/pdf/viewer',[PdfController::class, 'show'])->name('pdf.view');

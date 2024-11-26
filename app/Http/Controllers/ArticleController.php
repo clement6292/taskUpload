@@ -58,6 +58,12 @@ class ArticleController extends Controller
     public function show($id)
     {
         $article = Article::findOrFail($id); // Récupérer l'article par ID
-        return view('articles.show', compact('article')); // Retourner la vue avec l'article
+
+        // Rediriger vers le PdfController avec les paramètres nécessaires
+        return redirect()->route('pdf.view', [
+            'file' => $article->file_path,
+            'title' => $article->title,
+            'image' => $article->image_path,
+        ]);
     }
 }
