@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="container mx-auto my-8 p-6 bg-white rounded-lg shadow-lg">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Uploader un Article</h2>
+        <h2 class="text-2xl text-center font-bold mb-6 text-gray-800">Formulaire de création d'articles</h2>
         <form action="{{ route('articles.upload') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-6">

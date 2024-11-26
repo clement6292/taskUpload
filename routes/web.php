@@ -5,9 +5,7 @@ use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PhotoController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [ArticleController::class, 'index'])->name('home');
 
 
 

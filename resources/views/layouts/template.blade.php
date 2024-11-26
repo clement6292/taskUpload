@@ -13,7 +13,7 @@
             <h1 class="text-3xl text-center font-bold text-indigo-700">Mon Site d'Articles</h1>
             <nav class="mt-4 text-2xl text-end font-bold p-4 bg-amber-300">
                 <a href="{{ url('/articles') }}" class="text-indigo-600 hover:text-indigo-800 transition duration-200">Articles</a>
-                <a href="{{ route('articles.create') }}" class="text-indigo-600 hover:text-indigo-800 transition duration-200 ml-6">Uploader un Article</a>
+                <a href="{{ route('articles.create') }}" class="text-indigo-600 hover:text-indigo-800 transition duration-200 ml-6">Créer un Article</a>
             </nav>
         </header>
 
