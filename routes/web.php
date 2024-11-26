@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PhotoController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,6 @@ Route::get('/articles/{id}', [ArticleController::class, 'show'])->name('articles
 
 Route::get('/photo', [PhotoController::class, 'create']);
 Route::post('/photo', [PhotoController::class, 'store']);
+
+
+Route::get('/pdf/view',[PdfController::class, 'show'])->name('pdf.view');

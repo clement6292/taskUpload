@@ -23,7 +23,7 @@
                 <p class="text-gray-700 mb-4">{{ $article->description }}</p>
             </div>
             <div class="mt-auto">
-                <a href="{{ asset('storage/' . $article->file_path) }}" class="text-blue-500 hover:underline" target="_blank">Lire le PDF</a>
+                <a href="{{ route('pdf.view', ['file' => asset('storage/' . $article->file_path)]) }}" class="text-blue-500 hover:underline" target="_blank">Lire le PDF</a>
             </div>
         </div>
     </div>
