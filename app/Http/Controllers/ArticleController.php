@@ -66,4 +66,38 @@ class ArticleController extends Controller
             'image' => $article->image_path,
         ]);
     }
+
+
+
+    public function edit($id)
+{
+    $article = Article::findOrFail($id);
+    return view('articles.edit', compact('article'));
+}
+
+
+
+public function update(Request $request, $id)
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'image' => 'nullable|image|max:2048',
+    ]);
+
+    $article = Article::findOrFail($id);
+    $article->update($request->all());
+
+    return redirect()->route('articles.index')->with('success', 'Article mis à jour avec succès.');
+}
+
+
+
+public function destroy($id)
+{
+    $article = Article::findOrFail($id);
+    $article->delete();
+
+    return redirect()->route('articles.index')->with('success', 'Article supprimé avec succès.');
+}
 }
