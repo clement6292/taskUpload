@@ -20,10 +20,6 @@
         <main class="bg-white rounded-lg shadow-md p-6">
             @yield('content') <!-- Section pour le contenu spécifique des pages -->
         </main>
-
-        <footer class="mt-8 text-center text-gray-600">
-            <p>&copy; {{ date('Y') }} Mon Site. Tous droits réservés.</p>
-        </footer>
     </div>
 
     @vite('resources/js/app.js') <!-- Charger le JS compilé avec Vite, si nécessaire -->

@@ -26,28 +26,28 @@
 
 </div>
 
-    <div class="flex-1 p-4 flex flex-col justify-between relative"> <!-- Ajout de relative ici -->
+    <div class="flex-1 p-4 flex flex-col justify-between relative">
         <div>
             <p class="text-gray-700 mb-4">{{ $article->description }}</p>
         </div>
         <div class="mt-auto">
-            <a href="{{ route('pdf.view', ['file' => asset('storage/' . $article->file_path), 'title' => $article->title, 'image' => $article->image_path]) }}" class="text-blue-500 hover:underline" target="_blank">Lire le PDF</a>
+            <a href="{{ route('pdf.view', ['file' => asset('storage/' . $article->file_path), 'title' => $article->title, 'image' => $article->image_path]) }}" class="text-blue-500 text-2xl hover:underline" target="_blank">Lire</a>
             
             <!-- Menu pour Éditer et Supprimer -->
-            <div class="relative inline-block text-left "> 
-                <div class=" inline-block">
+            <div class="relative inline-block text-left mt-4"> 
+                <div class="inline-block">
                     <button type="button" onclick="toggleMenu(event, '{{ $article->id }}')" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         ⋮
                     </button>
                 </div>
             
-                <div id="menu-{{ $article->id }}" class="relative right-0 z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden" role="menu" aria-orientation="vertical" aria-labelledby="options-menu " v-if="">
+                <div id="menu-{{ $article->id }}" class="relative right-0 z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden" role="menu" aria-orientation="vertical">
                     <div class="py-1" role="none">
                         <a href="{{ route('articles.edit', $article->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Éditer</a>
-                        <form action="{{ route('articles.destroy', $article->id) }}" method="POST" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                        <form action="{{ route('articles.destroy', $article->id) }}" method="POST" data-article-id="{{ $article->id }}">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="w-full text-left">Supprimer</button>
+                            <button type="button" onclick="showConfirmationModal(event, '{{ $article->id }}')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Supprimer</button>
                         </form>
                     </div>
                 </div>
@@ -60,33 +60,75 @@
 </div>
 
 <div class="mt-4">
+    {{ $articles->links() }} <!-- Affiche les liens de pagination -->
+</div>
 
-{{ $articles->links() }} <!-- Affiche les liens de pagination -->
-
+<!-- Modal de Confirmation -->
+<div id="confirmation-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg p-6 w-1/3">
+        <h2 class="text-lg font-bold mb-4">Confirmation</h2>
+        <p>Êtes-vous sûr de vouloir supprimer cet article ?</p>
+        <div class="mt-4 flex justify-end">
+            <button id="cancel-btn" class="mr-2 px-4 py-2 bg-gray-300 rounded">Annuler</button>
+            <button id="confirm-btn" class="px-4 py-2 bg-red-600 text-white rounded">Supprimer</button>
+        </div>
+    </div>
 </div>
 
 <script>
+    let openMenuId = null;
+    let currentDeleteForm = null;
 
-function toggleMenu(event, articleId) {
+    function toggleMenu(event, articleId) {
+        const menuId = 'menu-' + articleId;
+        const menu = document.getElementById(menuId);    
+        if (openMenuId && openMenuId !== menuId) {
+            // Fermer le menu ouvert précédemment
+            document.getElementById(openMenuId).classList.add('hidden');
+        }
+    
+        if (menu) {
+            const isHidden = menu.classList.contains('hidden');
+            menu.classList.toggle('hidden', !isHidden);
+            openMenuId = isHidden ? menuId : null;
+        } else {
+            console.error('Menu not found:', menuId);
+        }
+    
+        // Empêche la propagation du clic sur le bouton
+        event.stopPropagation();
+    }
+    
+    // Fermer le menu si on clique en dehors
+    document.addEventListener('click', function(event) {
+        if (openMenuId) {
+            const openMenu = document.getElementById(openMenuId);
+            if (openMenu && !openMenu.contains(event.target)) {
+                openMenu.classList.add('hidden');
+                openMenuId = null; // Réinitialiser l'ID du menu ouvert
+            }
+        }
+    });
 
-const menuId = 'menu-' + articleId;
-console.log(menuId);
+    // Afficher le modal de confirmation
+    function showConfirmationModal(event, articleId) {
+        event.preventDefault();
+        currentDeleteForm = document.querySelector(`form[data-article-id="${articleId}"]`); 
+        console.log(currentDeleteForm); // Vérifiez ici
+        document.getElementById('confirmation-modal').classList.remove('hidden');
+    }
 
-const menu = document.getElementById(menuId);
+    // Confirmer la suppression
+    document.getElementById('confirm-btn').addEventListener('click', function() {
+        if (currentDeleteForm) {
+            currentDeleteForm.submit(); // Soumettre le formulaire
+        }
+    });
 
-
-if (menu) {
-
-menu.classList.toggle('hidden'); 
-
-} else {
-
-console.error('Menu not found:', menuId);
-
-}
-
-}
-
+    // Fermer le modal
+    document.getElementById('cancel-btn').addEventListener('click', function() {
+        document.getElementById('confirmation-modal').classList.add('hidden');
+    });
 </script>
 
 @endsection
