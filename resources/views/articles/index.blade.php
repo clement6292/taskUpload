@@ -129,6 +129,12 @@
     document.getElementById('cancel-btn').addEventListener('click', function() {
         document.getElementById('confirmation-modal').classList.add('hidden');
     });
+
+    
 </script>
+
+<style>
+
+</style>
 
 @endsection

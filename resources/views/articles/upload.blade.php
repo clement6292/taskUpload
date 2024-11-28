@@ -3,7 +3,7 @@
 @section('title', 'Uploader un Article')
 
 @section('content')
-    <div class="container mx-auto my-8 p-6 bg-white rounded-lg shadow-lg">
+    <div class="container mx-auto my-8 p-6 bg-white rounded-lg shadow-lg form">
         <h2 class="text-2xl text-center font-bold mb-6 text-gray-800">Formulaire de création d'articles</h2>
         <form action="{{ route('articles.upload') }}" method="POST" enctype="multipart/form-data">
             @csrf
