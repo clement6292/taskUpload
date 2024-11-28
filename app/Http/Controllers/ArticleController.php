@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
+    // public function __construct()
+    // {
+    //     // Assurez-vous que Auth est correctement configuré
+    //     $this->middleware('auth'); // Applique le middleware d'authentification
+    // }
+
     // Méthode pour afficher le formulaire d'upload
     public function create()
     {
@@ -17,32 +23,31 @@ class ArticleController extends Controller
     public function upload(Request $request)
     {
         // Validation des entrées
-       try {
-        $validation = $request->validate([
-            'file' => 'required|mimes:pdf|max:2048',
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-        ]);
-        // dd($validation);
-        // Stocker le fichier PDF
-        $filePath = $request->file('file')->store('articles', 'public');
+        try {
+            $validation = $request->validate([
+                'file' => 'required|mimes:pdf|max:2048',
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'image' => 'nullable|image|max:2048',
+            ]);
 
-        // Stocker l'image si elle est fournie
-        $imagePath = $request->file('image') ? $request->file('image')->store('images', 'public') : null;
+            // Stocker le fichier PDF
+            $filePath = $request->file('file')->store('articles', 'public');
 
-        // Créer l'article dans la base de données
-        Article::create([
-            'title' => $request->input('title'),
-            'file_path' => $filePath,
-            'description' => $request->input('description'),
-            'image_path' => $imagePath,
-        ]);
-       } catch (\Throwable $th) {
-       dd($th);
-       }
-       
-           
+            // Stocker l'image si elle est fournie
+            $imagePath = $request->file('image') ? $request->file('image')->store('images', 'public') : null;
+
+            // Créer l'article dans la base de données
+            Article::create([
+                'title' => $request->input('title'),
+                'file_path' => $filePath,
+                'description' => $request->input('description'),
+                'image_path' => $imagePath,
+            ]);
+        } catch (\Throwable $th) {
+            dd($th);
+        }
+
         // Rediriger vers une page de succès ou vers la liste des articles
         return redirect()->route('articles.index')->with('success', 'Article uploaded successfully.');
     }
@@ -67,37 +72,31 @@ class ArticleController extends Controller
         ]);
     }
 
-
-
     public function edit($id)
-{
-    $article = Article::findOrFail($id);
-    return view('articles.edit', compact('article'));
-}
+    {
+        $article = Article::findOrFail($id);
+        return view('articles.edit', compact('article'));
+    }
 
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+        ]);
 
+        $article = Article::findOrFail($id);
+        $article->update($request->all());
 
-public function update(Request $request, $id)
-{
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'image' => 'nullable|image|max:2048',
-    ]);
+        return redirect()->route('articles.index')->with('success', 'Article mis à jour avec succès.');
+    }
 
-    $article = Article::findOrFail($id);
-    $article->update($request->all());
+    public function destroy($id)
+    {
+        $article = Article::findOrFail($id);
+        $article->delete();
 
-    return redirect()->route('articles.index')->with('success', 'Article mis à jour avec succès.');
-}
-
-
-
-public function destroy($id)
-{
-    $article = Article::findOrFail($id);
-    $article->delete();
-
-    return redirect()->route('articles.index')->with('success', 'Article supprimé avec succès.');
-}
+        return redirect()->route('articles.index')->with('success', 'Article supprimé avec succès.');
+    }
 }

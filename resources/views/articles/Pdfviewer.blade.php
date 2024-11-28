@@ -7,7 +7,7 @@
     <div class="flex-grow container mx-auto my-8 text-white px-4 py-2 rounded mb-8 text-center font-bold">
         {{-- titre de l'article et l'image qui lui ai associée --}}
 
-        <div class="flex flex-col items-center two">
+        <div class="flex flex-col items-center ">
             <!-- Titre de l'article -->
             <h2 class="text-2xl font-bold mb-4 text-gray-700">{{ $title }}</h2> 
             
