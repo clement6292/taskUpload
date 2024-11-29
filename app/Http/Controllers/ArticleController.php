@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ArticleController extends Controller
 {
@@ -43,6 +44,7 @@ class ArticleController extends Controller
                 'file_path' => $filePath,
                 'description' => $request->input('description'),
                 'image_path' => $imagePath,
+                'user_id' => auth()->id() // Ajoutez cette ligne pour inclure l'ID de l'utilisateur
             ]);
         } catch (\Throwable $th) {
             dd($th);
@@ -79,19 +81,33 @@ class ArticleController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-        ]);
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048', // Valider l'image
+    ]);
 
-        $article = Article::findOrFail($id);
-        $article->update($request->all());
+    $article = Article::findOrFail($id);
+    $article->title = $request->title;
+    $article->description = $request->description;
 
-        return redirect()->route('articles.index')->with('success', 'Article mis à jour avec succès.');
+    // Vérifiez si une nouvelle image a été téléchargée
+    if ($request->hasFile('image')) {
+        // Supprimer l'ancienne image si elle existe
+        if ($article->image_path) {
+            Storage::delete($article->image_path);
+        }
+
+        // Stocker la nouvelle image
+        $path = $request->file('image')->store('images', 'public');
+        $article->image_path = $path;
     }
 
+    $article->save(); // Sauvegarder les modifications
+
+    return redirect()->route('articles.index')->with('success', 'Article mis à jour avec succès.');
+}
     public function destroy($id)
     {
         $article = Article::findOrFail($id);
@@ -99,4 +115,12 @@ class ArticleController extends Controller
 
         return redirect()->route('articles.index')->with('success', 'Article supprimé avec succès.');
     }
+
+
+    public function userArticles()
+{
+    $articles = Article::where('user_id', auth()->id())->paginate(9); // Récupérer les articles de l'utilisateur connecté
+    return view('articles.user', compact('articles')); // Retourner la vue avec les articles de l'utilisateur
+}
+
 }

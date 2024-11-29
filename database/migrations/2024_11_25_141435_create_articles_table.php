@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('file_path'); // Chemin du fichier PDF
             $table->text('description')->nullable(); // Description de l'article
             $table->string('image_path')->nullable(); // Chemin de l'image
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); 
             $table->timestamps(); // Colonnes created_at et updated_at
         });
     }

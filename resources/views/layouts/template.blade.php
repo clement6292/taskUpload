@@ -9,6 +9,8 @@
     @vite(['resources/js/app.js'])
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <!-- Inclure SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 
 <body class="bg-gray-50 text-gray-800">
@@ -17,14 +19,15 @@
             <header class="mb-8">
                 <h1 class="text-3xl text-center font-bold text-indigo-700">Mon Site d'Articles</h1>
                 <nav class="mt-4 text-2xl text-end font-bold p-4 bg-amber-300">
+                  
                     <a href="{{ url('/articles') }}"
-                        class="text-indigo-600 hover:text-indigo-800 transition duration-200">Articles</a>
+                        class="text-indigo-600 hover:text-indigo-800 transition duration-200">Accueil</a>
                     <a href="{{ route('articles.create') }}"
                         class="text-indigo-600 hover:text-indigo-800 transition duration-200 ml-6">Créer un Article</a>
 
                     @if (Auth::check())
                         <div class="inline-flex items-center">
-                           
+                            <a href="{{ route('articles.user') }}" class="text-indigo-600 hover:text-indigo-800 transition duration-200 ml-6"> Dashboad</a>
                             <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                 @csrf
                             </form>

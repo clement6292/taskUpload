@@ -4,6 +4,7 @@ use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\PhotoController;
+use App\Http\Controllers\UserController; // Assurez-vous d'importer le UserController
 use Illuminate\Support\Facades\Route;
 
 // Redirige vers la page de connexion par défaut
@@ -20,6 +21,7 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 // Routes protégées par authentification
 Route::middleware(['auth'])->group(function () {
+    // Routes pour les articles
     Route::get('/articles/create', [ArticleController::class, 'create'])->name('articles.create');
     Route::post('/articles/upload', [ArticleController::class, 'upload'])->name('articles.upload');
     Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
@@ -27,10 +29,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/articles/{id}/edit', [ArticleController::class, 'edit'])->name('articles.edit');
     Route::put('/articles/{id}', [ArticleController::class, 'update'])->name('articles.update');
     Route::delete('/articles/{id}', [ArticleController::class, 'destroy'])->name('articles.destroy');
+    Route::get('/mes-articles', [ArticleController::class, 'userArticles'])->name('articles.user')->middleware('auth');
 
+    // Routes pour la photo
     Route::get('/photo', [PhotoController::class, 'create']);
     Route::post('/photo', [PhotoController::class, 'store']);
     
+    // Route pour le visualiseur PDF
     Route::get('/pdf/viewer', [PdfController::class, 'show'])->name('pdf.view');
 });
 

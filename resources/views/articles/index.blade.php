@@ -4,7 +4,7 @@
 
 @section('content')
 
-<h1 class="text-2xl text-center font-bold mb-4">Mes Articles</h1>
+<h1 class="text-2xl text-center font-bold mb-4">Tous les articles</h1>
 
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
 
@@ -46,11 +46,7 @@
                      role="menu" aria-orientation="vertical">
                     <div class="py-1" role="none">
                         <a href="{{ route('articles.edit', $article->id) }}" class="block px-4 py-2 text-sm text-gray-700" >Éditer</a>
-                        <form action="{{ route('articles.destroy', $article->id) }}" method="POST" data-article-id="{{ $article->id }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" onclick="showConfirmationModal(event, '{{ $article->id }}')" class="block px-4 py-2 text-sm text-gray-700 ">Supprimer</button>
-                        </form>
+                        <button type="button" onclick="confirmDelete('{{ $article->id }}', '{{ $article->title }}')" class="block px-4 py-2 text-sm text-gray-700 ">Supprimer</button>
                     </div>
                 </div>
             </div>
@@ -65,21 +61,8 @@
     {{ $articles->links() }} <!-- Affiche les liens de pagination -->
 </div>
 
-<!-- Modal de Confirmation -->
-<div id="confirmation-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg p-6 w-1/3">
-        <h2 class="text-lg font-bold mb-4">Confirmation</h2>
-        <p>Êtes-vous sûr de vouloir supprimer cet article ?</p>
-        <div class="mt-4 flex justify-end">
-            <button id="cancel-btn" class="mr-2 px-4 py-2 bg-gray-300 rounded">Annuler</button>
-            <button id="confirm-btn" class="px-4 py-2 bg-red-600 text-white rounded">Supprimer</button>
-        </div>
-    </div>
-</div>
-
 <script>
     let openMenuId = null;
-    let currentDeleteForm = null;
 
     function toggleMenu(event, articleId) {
         const menuId = 'menu-' + articleId;
@@ -112,31 +95,41 @@
         }
     });
 
-    // Afficher le modal de confirmation
-    function showConfirmationModal(event, articleId) {
-        event.preventDefault();
-        currentDeleteForm = document.querySelector(`form[data-article-id="${articleId}"]`); 
-        console.log(currentDeleteForm); // Vérifiez ici
-        document.getElementById('confirmation-modal').classList.remove('hidden');
+    // Afficher la confirmation de suppression avec SweetAlert
+    function confirmDelete(articleId, articleTitle) {
+        Swal.fire({
+            title: 'Êtes-vous sûr ?',
+            text: `Vous allez supprimer "${articleTitle}". Cette action est irréversible.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Oui, supprimer !',
+            cancelButtonText: 'Annuler'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Créer un formulaire pour supprimer l'article
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/articles/' + articleId; // Lien vers la route de suppression
+
+                const csrfInput = document.createElement('input');
+                csrfInput.type = 'hidden';
+                csrfInput.name = '_token';
+                csrfInput.value = '{{ csrf_token() }}'; // CSRF token
+
+                const methodInput = document.createElement('input');
+                methodInput.type = 'hidden';
+                methodInput.name = '_method';
+                methodInput.value = 'DELETE'; // Méthode de la requête
+
+                form.appendChild(csrfInput);
+                form.appendChild(methodInput);
+                document.body.appendChild(form);
+                form.submit(); // Soumettre le formulaire
+            }
+        });
     }
-
-    // Confirmer la suppression
-    document.getElementById('confirm-btn').addEventListener('click', function() {
-        if (currentDeleteForm) {
-            currentDeleteForm.submit(); // Soumettre le formulaire
-        }
-    });
-
-    // Fermer le modal
-    document.getElementById('cancel-btn').addEventListener('click', function() {
-        document.getElementById('confirmation-modal').classList.add('hidden');
-    });
-
-    
 </script>
-
-<style>
-
-</style>
 
 @endsection
