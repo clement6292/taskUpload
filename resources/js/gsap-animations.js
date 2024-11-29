@@ -1,14 +1,16 @@
-// gsap.registerPlugin(ScrollTrigger);
-// // gsap.to(".site" ,{
-// //     scrollTrigger: ".site",
-// //     scale: 2,
-// //     repeat: 7,
-// //     yoyo: true,
-// //     ease: "power1", 
-// // });
+gsap.registerPlugin(ScrollTrigger);
+gsap.to(".logout" ,{
+    scrollTrigger: ".site",
+    scale: 0.7,
+    repeat: -1,
+    yoyo: true,
+    ease: "power5", 
+});
 
-// gsap.to(".form" ,{
-//     scrollTrigger: ".form", 
-//   duration: 2, 
-//   rotation: 360
+// gsap.to(".point" ,{
+//     scrollTrigger: ".point",
+//     scale: 0.7,
+//     repeat: -1,
+//     yoyo: true,
+//     ease: "power2",
 // });

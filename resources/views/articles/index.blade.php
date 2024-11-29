@@ -36,18 +36,20 @@
             <!-- Menu pour Éditer et Supprimer -->
             <div class="relative inline-block text-left mt-4"> 
                 <div class="inline-block">
-                    <button type="button" onclick="toggleMenu(event, '{{ $article->id }}')" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <button type="button" onclick="toggleMenu(event, '{{ $article->id }}')" class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 point">
                         ⋮
                     </button>
                 </div>
             
-                <div id="menu-{{ $article->id }}" class="relative right-0 z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 hidden" role="menu" aria-orientation="vertical">
+                <div id="menu-{{ $article->id }}" class="relative right-0 z-10 mt-2 w-56 rounded-md 
+                    shadow-lg ring-1 ring-black bg-gray-300 ring-opacity-5 hidden"
+                     role="menu" aria-orientation="vertical">
                     <div class="py-1" role="none">
-                        <a href="{{ route('articles.edit', $article->id) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Éditer</a>
+                        <a href="{{ route('articles.edit', $article->id) }}" class="block px-4 py-2 text-sm text-gray-700" >Éditer</a>
                         <form action="{{ route('articles.destroy', $article->id) }}" method="POST" data-article-id="{{ $article->id }}">
                             @csrf
                             @method('DELETE')
-                            <button type="button" onclick="showConfirmationModal(event, '{{ $article->id }}')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Supprimer</button>
+                            <button type="button" onclick="showConfirmationModal(event, '{{ $article->id }}')" class="block px-4 py-2 text-sm text-gray-700 ">Supprimer</button>
                         </form>
                     </div>
                 </div>
